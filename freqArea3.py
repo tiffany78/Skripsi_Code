@@ -90,7 +90,8 @@ PIXEL_AREA_M2 = PIXEL_SIZE * PIXEL_SIZE
 # =========================================================
 MIN_AREA = 2 # 2 ha 
 MIN_PIXELS = (int) ((MIN_AREA*10000) / PIXEL_AREA_M2)
-MERGE_GAP_PIXELS = 25
+MERGE_DISTANCE = 500 # satuan meter
+MERGE_GAP_PIXELS = (int) (MERGE_DISTANCE / PIXEL_SIZE)
 FILL_HOLES = True
 USE_MERGED_AREA_AS_FINAL = True
 CHECK_MERGED_PIXELS_WITH_4_FACTORS = True
@@ -274,6 +275,34 @@ def build_factor4_mask(sal_arr, depth_arr, temp_arr, sen_arr):
     factor4_mask = sal_ok & depth_ok & temp_ok & sen_ok
 
     return factor4_mask
+
+def build_factor3_mask(sal_arr, temp_arr, sen_arr):
+    """
+    Mengecek apakah setiap piksel lolos 3 faktor:
+    salinitas, suhu, dan sedimentasi.
+    """
+
+    sal_ok = (
+        np.isfinite(sal_arr)
+        & (sal_arr >= sal_min)
+        & (sal_arr <= sal_max)
+    )
+
+    temp_ok = (
+        np.isfinite(temp_arr)
+        & (temp_arr >= temp_min)
+        & (temp_arr <= temp_max)
+    )
+
+    sen_ok = (
+        np.isfinite(sen_arr)
+        & (sen_arr >= sen_min)
+        & (sen_arr <= sen_max)
+    )
+
+    factor3_mask = sal_ok & temp_ok & sen_ok
+
+    return factor3_mask
 
 def summarize_values(values, prefix):
     arr = np.asarray(values, dtype=float)

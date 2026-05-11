@@ -16,13 +16,33 @@ from shapely.geometry import shape
 # =====================================================
 # KONFIGURASI PATH
 # =====================================================
-INPUT_DIRS = [
-    Path("/Users/tipanoii/doc/TA/code/seaweed/output_filtering/35m"),
-    Path("/Users/tipanoii/doc/TA/code/seaweed/output_filtering/10m"),
-]
+INPUT_DIRS = ""
+OUTPUT_DIR = ""
+MODE = "reef"  # "seaweed" or "reef"
 
-OUTPUT_DIR = Path("/Users/tipanoii/doc/TA/code/web/geojson")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+if MODE == "seaweed":
+    print("\n============== ANALISIS RUMPUT LAUT ========================")
+    INPUT_DIRS = [
+        Path("/Users/tipanoii/doc/TA/code/seaweed/output_filtering/35m"),
+        Path("/Users/tipanoii/doc/TA/code/seaweed/output_filtering/10m"),
+    ]
+    
+    OUTPUT_DIR = Path("/Users/tipanoii/doc/TA/code/web/geojsonSeaweed")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+elif MODE == "reef":
+    print("\n============== ANALISIS TERUMBU KARANG ========================")
+    INPUT_DIRS = [
+        Path("/Users/tipanoii/doc/TA/code/reef/output_filtering/35m"),
+        Path("/Users/tipanoii/doc/TA/code/reef/output_filtering/10m"),
+    ]
+    
+    OUTPUT_DIR = Path("/Users/tipanoii/doc/TA/code/web/geojsonReef")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+else:
+    raise SystemExit("Tipe Analisis Tidak Sesuai")
+
 
 # Prefix file dari kode sebelumnya
 ZONE_PREFIX = "zone_"
