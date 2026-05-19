@@ -90,7 +90,7 @@ def save_depth_png(depth_arr, out_png, title="Depth Map", nodata_value=None, bin
     rgb[:, :] = [0, 0, 0]
 
     # Gunakan colormap bertingkat
-    cmap = colormaps["viridis"]
+    cmap = colormaps["Blues"]
     n_classes = len(labels)
 
     legend_elements = []

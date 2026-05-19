@@ -91,13 +91,11 @@ def save_png_from_geotiff(tif_path, output_folder, show_plot=SHOW_PLOT):
     # 1 = merah
     rgb[arr == 1] = [255, 0, 0]
 
-    # nilai lain tetap hitam
-
     out_png = output_folder / f"{tif_path.stem}.png"
 
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.imshow(rgb, interpolation="nearest")
-    ax.set_title(tif_path.stem)
+    ax.set_title("Hasil Prediksi Asmat " + tif_path.stem)
     ax.axis("off")
 
     plt.savefig(out_png, dpi=300, bbox_inches="tight")
