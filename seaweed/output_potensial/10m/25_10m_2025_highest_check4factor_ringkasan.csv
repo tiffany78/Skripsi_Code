@@ -1,0 +1,5 @@
+scenario,zone_id,pixel_count,area_m2,area_ha,input_file,salinity_mean,depth_mean,temperature_mean,sedimentation_mean
+check4factor,1,70,28000,2.8,factor_suitability_2025_Depth_10m_2025_highest.tif,33.099,4.688,28.951,24.774
+check4factor,2,51,20400,2.04,factor_suitability_2025_Depth_10m_2025_highest.tif,33.099,4.728,28.951,24.774
+check4factor,3,52,20800,2.08,factor_suitability_2025_Depth_10m_2025_highest.tif,33.099,4.618,28.951,24.774
+check4factor,4,54,21600,2.16,factor_suitability_2025_Depth_10m_2025_highest.tif,33.099,4.743,28.951,24.774

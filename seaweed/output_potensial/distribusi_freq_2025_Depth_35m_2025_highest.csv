@@ -1,0 +1,20 @@
+frequency,depth,salinity,temp,sediment,count_pixels,year,freq_file,depth_file
+2,3.0 - 3.5,32.5 - 33.0,no data avail,out of range,1,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,4.0 - 4.5,32.5 - 33.0,no data avail,out of range,1,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,4.5 - 5.0,32.5 - 33.0,no data avail,out of range,2,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,32.5 - 33.0,29.0 - 29.5,10.0 - 15.0,8,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,32.5 - 33.0,29.0 - 29.5,20.0 - 25.0,1,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,32.5 - 33.0,no data avail,out of range,2,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,10.0 - 15.0,403,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,15.0 - 20.0,290,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,20.0 - 25.0,1654,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,5.0 - 10.0,3,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,no data avail,128,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,28.5 - 29.0,out of range,21,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,0.0 - 5.0,444,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,10.0 - 15.0,1431,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,15.0 - 20.0,392,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,20.0 - 25.0,87,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,5.0 - 10.0,456,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,29.0 - 29.5,out of range,17,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif
+2,out of range,33.0 - 33.5,no data avail,out of range,3,2025,2025_frequency_q1_q2_q3_q4.tif,Depth_35m_2025.tif

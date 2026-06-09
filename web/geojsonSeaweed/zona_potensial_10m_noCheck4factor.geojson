@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "zona_potensial_10m_noCheck4factor",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "zone_id": 1, "scenario": "noCheck4factor", "pixel_count": 1263, "area_m2": 505200, "area_ha": 50.52, "input_file": "factor_suitability_2025_Depth_10m_2025_highest.tif", "salinity_min": 33.099, "salinity_max": 33.099, "salinity_mean": 33.099, "salinity_median": 33.099, "depth_min": 3.619, "depth_max": 7.076, "depth_mean": 5.307, "depth_median": 5.308, "temperature_min": 28.951, "temperature_max": 28.951, "temperature_mean": 28.951, "temperature_median": 28.951, "sedimentation_min": 24.774, "sedimentation_max": 24.774, "sedimentation_mean": 24.774, "sedimentation_median": 24.774, "depth_group": "10m", "source_zone_tif": "25_10m_2025_highest_noCheck4factor_zone.tif", "source_csv": "25_10m_2025_highest_noCheck4factor_ringkasan.csv" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 137.735503578835591, -5.448493957869935 ], [ 137.735490885178791, -5.450842204342705 ], [ 137.735310634171611, -5.450841225590243 ], [ 137.735309657452831, -5.451021859892888 ], [ 137.739455440160725, -5.45104435833585 ], [ 137.739436899733732, -5.45447642409529 ], [ 137.744303737830734, -5.454502815691225 ], [ 137.744300813664495, -5.455044723406979 ], [ 137.745202083406895, -5.455049606919832 ], [ 137.745199159751849, -5.455591515112242 ], [ 137.745379413959824, -5.455592491750831 ], [ 137.745414476430938, -5.449089591525234 ], [ 137.736041401631041, -5.449038795876895 ], [ 137.736044329960635, -5.448496892532305 ], [ 137.735503578835591, -5.448493957869935 ] ] ] } }
+]
+}

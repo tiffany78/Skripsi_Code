@@ -20,10 +20,10 @@ MODE = "reef" # "seaweed" or "reef"
 
 if MODE == "seaweed":
     print("\n============== ANALISIS RUMPUT LAUT ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/seaweed")
+    ROOT = Path("D:/TA/code/seaweed")
 elif MODE == "reef":
     print("\n============== ANALISIS TERUMBU KARANG ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/reef")
+    ROOT = Path("D:/TA/code/reef")
 else:
     raise SystemExit("Tipe Analisis Tidak Sesuai")
     
@@ -257,7 +257,7 @@ def process_single_year():
     )
 
 # =========================================================
-# JALANKAN
+# RUN PROGRAM
 # =========================================================
 if __name__ == "__main__":
     process_single_year()

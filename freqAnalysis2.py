@@ -21,12 +21,12 @@ from matplotlib.patches import Patch
 # PATH
 # =========================================================
 ROOT_FREQ = ""
-MODE = "seaweed" # "seaweed" or "reef"
+MODE = "reef" # "seaweed" or "reef"
 
 if MODE == "seaweed":
     print("\n============== ANALISIS RUMPUT LAUT ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/seaweed/")
-    ROOT_FREQ = ROOT / "output_frequency_tif"
+    ROOT = Path("D:/TA/code/seaweed")
+    ROOT_FREQ = ROOT / "output"
     
     # batas habitat rumput laut
     sal_bin_width = 0.5
@@ -46,8 +46,8 @@ if MODE == "seaweed":
     sen_max = 25
 elif MODE == "reef":
     print("\n============== ANALISIS TERUMBU KARANG ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/reef/")
-    ROOT_FREQ = ROOT / "output_frequency_tif"
+    ROOT = Path("D:/TA/code/reef/")
+    ROOT_FREQ = ROOT / "output"
     
     # batas habitat terumbu karang
     sal_bin_width = 0.5
@@ -68,18 +68,32 @@ elif MODE == "reef":
 else:
     raise SystemExit("Tipe Analisis Tidak Sesuai")
 
-ROOT_SAL  = Path("/Users/tipanoii/doc/TA/code/salinity/")
-ROOT_TEMP = Path("/Users/tipanoii/doc/TA/code/temp/")
-ROOT_DEPTH = Path("/Users/tipanoii/doc/TA/code/depth/")
-ROOT_SEN = Path("/Users/tipanoii/doc/TA/code/sediment/")
+ROOT_SAL  = Path("D:/TA/code/salinity/")
+ROOT_TEMP = Path("D:/TA/code/temp/")
+ROOT_DEPTH = Path("D:/TA/code/depth/")
+ROOT_SEN = Path("D:/TA/code/sediment/")
 
-OUT_FACTOR_DIR = ROOT / "output_filtering"
+OUT_FACTOR_DIR = ROOT / "output_potensial"
 OUT_CSV_DIR = OUT_FACTOR_DIR
 
 OUT_FACTOR_DIR.mkdir(parents=True, exist_ok=True)
 
-FREQ_PATTERN = "*frequency*.tif"
-DEPTH_PATTERN = "*.tif"
+# =========================================================
+# INPUT 1 DATA FREKUENSI DAN 2 DATA DEPTH
+# =========================================================
+YEAR_ANALYSIS = "2025"
+
+# Sesuaikan nama file frekuensi 2025 di folder ROOT_FREQ
+FREQ_TIF = ROOT_FREQ / "2025_frequency_q1_q2_q3_q4.tif"
+
+# Mode: "highest" = proses hanya frekuensi tertinggi, misalnya hanya 4
+FREQUENCY_MODE = "highest"
+
+# Depth yang diproses hanya 2 file ini
+DEPTH_TIFS = [
+    ROOT_DEPTH / "Depth_35m_2025.tif",
+    ROOT_DEPTH / "Depth_10m_2025.tif",
+]
 
 # =========================================================
 # PARAMETER GLOBAL
@@ -115,10 +129,6 @@ def standardize_xy(da):
         rename_dict["longitude"] = "x"
     if "latitude" in da.dims:
         rename_dict["latitude"] = "y"
-    if "lon" in da.dims:
-        rename_dict["lon"] = "x"
-    if "lat" in da.dims:
-        rename_dict["lat"] = "y"
 
     da = da.rename(rename_dict)
     da = da.rio.set_spatial_dims(x_dim="x", y_dim="y")
@@ -183,7 +193,7 @@ def save_factor_png(class_arr, out_png, title="Kesesuaian Faktor Habitat", show_
 
     print(f"PNG tersimpan: {out_png}")
 
-def load_sal_temp_for_year(year, freq):
+def load_external_for_year(year, freq):
     """
     Load salinitas dan suhu untuk 1 tahun, lalu reproject ke grid freq.
     """
@@ -209,26 +219,20 @@ def load_sal_temp_for_year(year, freq):
 
     # rata-rata tahunan
     cur_sal = sal.sel(time=slice(f"{year}-01-01", f"{int(year)+1}-01-01")).mean("time")
-    if "depth" in cur_sal.dims:
-        cur_sal = cur_sal.sel(depth=0, method="nearest")
-    elif "deptht" in cur_sal.dims:
-        cur_sal = cur_sal.sel(deptht=0, method="nearest")
-
+    cur_sal = cur_sal.sel(depth=0, method="nearest")
+    
     cur_temp = temp.sel(time=slice(f"{year}-01-01", f"{int(year)+1}-01-01")).mean("time")
-    if "depth" in cur_temp.dims:
-        cur_temp = cur_temp.sel(depth=0, method="nearest")
-    elif "deptht" in cur_temp.dims:
-        cur_temp = cur_temp.sel(deptht=0, method="nearest")
+    cur_temp = cur_temp.sel(depth=0, method="nearest")
     
     cur_sen = sen.sel(time=slice(f"{year}-01-01", f"{int(year)+1}-01-01")).mean("time")
-    if "depth" in cur_sen.dims:
-        cur_sen = cur_sen.sel(depth=0, method="nearest")
-    elif "deptht" in cur_sen.dims:
-        cur_sen = cur_sen.sel(deptht=0, method="nearest")
 
     cur_sal = standardize_xy(cur_sal)
     cur_temp = standardize_xy(cur_temp)
     cur_sen = standardize_xy(cur_sen)
+    
+    ds_sal.close()
+    ds_temp.close()
+    ds_sen.close()
 
     sal_on_freq = cur_sal.rio.reproject_match(freq, resampling=Resampling.nearest)
     temp_on_freq = cur_temp.rio.reproject_match(freq, resampling=Resampling.nearest)
@@ -236,13 +240,29 @@ def load_sal_temp_for_year(year, freq):
 
     return sal_on_freq, temp_on_freq, sen_on_freq
 
+def get_selected_frequencies(freq_vals):
+    """
+    FREQUENCY_MODE = "highest"
+        -> hanya frekuensi tertinggi yang dipakai.
+    """
+    available_freqs = sorted([
+        int(v) for v in np.unique(freq_vals[np.isfinite(freq_vals)])
+        if v >= 1
+    ])
+
+    if not available_freqs:
+        raise ValueError("Tidak ada nilai frekuensi valid >= 1 pada raster.")
+
+    return [max(available_freqs)]
+
 def process_one_combination(freq_tif, depth_tif):
     year = extract_year(freq_tif)
     depth_name = clean_name(depth_tif)
 
-    out_factor_tif = OUT_FACTOR_DIR / f"factor_suitability_{year}_{depth_name}.tif"
-    out_factor_png = OUT_FACTOR_DIR / f"factor_suitability_{year}_{depth_name}.png"
-    out_csv = OUT_CSV_DIR / f"distribusi_freq_{year}_{depth_name}.csv"
+    # nama output dibuat memuat mode frekuensi
+    out_factor_tif = OUT_FACTOR_DIR / f"factor_suitability_{year}_{depth_name}_{FREQUENCY_MODE}.tif"
+    out_factor_png = OUT_FACTOR_DIR / f"factor_suitability_{year}_{depth_name}_{FREQUENCY_MODE}.png"
+    out_csv = OUT_CSV_DIR / f"distribusi_freq_{year}_{depth_name}_{FREQUENCY_MODE}.csv"
 
     print("\n===================================================")
     print(f"Analisis tahun {year}")
@@ -263,7 +283,7 @@ def process_one_combination(freq_tif, depth_tif):
     # =========================================================
     # 2. LOAD SALINITAS & TEMP SESUAI TAHUN
     # =========================================================
-    sal_on_freq, temp_on_freq, sen_on_freq = load_sal_temp_for_year(year, freq)
+    sal_on_freq, temp_on_freq, sen_on_freq = load_external_for_year(year, freq)
 
     print("Shape salinity on frequency grid:", sal_on_freq.shape)
     print("CRS salinity on frequency grid:", sal_on_freq.rio.crs)
@@ -302,12 +322,16 @@ def process_one_combination(freq_tif, depth_tif):
     temp_vals = temp_on_freq.values
     sen_vals = sen_on_freq.values
 
-    unique_freqs = sorted([
+    available_freqs = sorted([
         int(v) for v in np.unique(freq_vals[np.isfinite(freq_vals)])
         if v >= 1
     ])
-
-    print("Frekuensi yang ditemukan:", unique_freqs)
+    
+    selected_freqs = get_selected_frequencies(freq_vals)
+    
+    print("Frekuensi yang ditemukan:", available_freqs)
+    print("Mode frekuensi:", FREQUENCY_MODE)
+    print("Frekuensi yang dianalisis:", selected_freqs)
 
     # =========================================================
     # 5. BUAT BIN
@@ -329,7 +353,7 @@ def process_one_combination(freq_tif, depth_tif):
     # =========================================================
     all_results = []
 
-    for f in unique_freqs:
+    for f in selected_freqs:
         mask_f = (freq_vals == f)
         total_pixels = int(np.count_nonzero(mask_f))
         print(f"Memproses frekuensi {f} | total piksel: {total_pixels}")
@@ -376,7 +400,7 @@ def process_one_combination(freq_tif, depth_tif):
                 
             # sediment
             if np.isfinite(se):
-                se_adj = np.nextafter(sen_max, -np.inf) if t == sen_max else se
+                se_adj = np.nextafter(sen_max, -np.inf) if se == sen_max else se
                 se_bin = pd.cut(
                     [se_adj], bins=sen_edges, labels=sen_labels,
                     right=False, include_lowest=True
@@ -412,7 +436,7 @@ def process_one_combination(freq_tif, depth_tif):
     # =========================================================
     # 7. HITUNG FACTOR CLASS
     # =========================================================
-    potential_mask = np.isfinite(freq_vals) & (freq_vals >= 1)
+    potential_mask = np.isfinite(freq_vals) & np.isin(freq_vals, selected_freqs)
 
     sal_available = np.isfinite(sal_vals)
     depth_available = np.isfinite(depth_vals)
@@ -464,33 +488,30 @@ def process_one_combination(freq_tif, depth_tif):
     save_factor_png(
         class_arr=factor_class,
         out_png=out_factor_png,
-        title=f"Area Potensial {year} - {depth_name}",
+        title=f"Area Potensial {year} - {depth_name} - {selected_freqs}",
         show_plot=False
     )
 
 # =========================================================
-# MAIN LOOP
+# MAIN LOOP UNTUK 1 FREKUENSI 2025 DAN 2 DEPTH
 # =========================================================
-freq_files = sorted(ROOT_FREQ.glob(FREQ_PATTERN))
-depth_files = sorted(ROOT_DEPTH.glob(DEPTH_PATTERN))
+if not FREQ_TIF.exists():
+    raise FileNotFoundError(f"File frekuensi tidak ditemukan: {FREQ_TIF}")
 
-if not freq_files:
-    raise FileNotFoundError(f"Tidak ada file frequency tif di {ROOT_FREQ}")
-if not depth_files:
-    raise FileNotFoundError(f"Tidak ada file depth tif di {ROOT_DEPTH}")
+for depth_tif in DEPTH_TIFS:
+    if not depth_tif.exists():
+        raise FileNotFoundError(f"File depth tidak ditemukan: {depth_tif}")
 
-print("Daftar file frequency:")
-for f in freq_files:
-    print(" -", f.name)
+print("File frequency yang diproses:")
+print(" -", FREQ_TIF.name)
 
-print("\nDaftar file depth:")
-for d in depth_files:
+print("\nFile depth yang diproses:")
+for d in DEPTH_TIFS:
     print(" -", d.name)
 
-for freq_tif in freq_files:
-    for depth_tif in depth_files:
-        try:
-            process_one_combination(freq_tif, depth_tif)
-        except Exception as e:
-            print(f"Gagal memproses kombinasi {freq_tif.name} x {depth_tif.name}")
-            print("Error:", e)
+for depth_tif in DEPTH_TIFS:
+    try:
+        process_one_combination(FREQ_TIF, depth_tif)
+    except Exception as e:
+        print(f"Gagal memproses kombinasi {FREQ_TIF.name} x {depth_tif.name}")
+        print("Error:", e)

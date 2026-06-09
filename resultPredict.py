@@ -15,15 +15,15 @@ import matplotlib.pyplot as plt
 # =========================================================
 # KONFIGURASI
 # =========================================================
-ROOT = Path("/Users/tipanoii/doc/TA/code/")
+ROOT = Path("D:/TA/code/code/")
 MODE = "reef" # "seaweed" or "reef"
 
 if MODE == "seaweed":
     print("\n============== ANALISIS RUMPUT LAUT ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/seaweed")
+    ROOT = Path("D:/TA/code/seaweed")
 elif MODE == "reef":
     print("\n============== ANALISIS TERUMBU KARANG ========================")
-    ROOT = Path("/Users/tipanoii/doc/TA/code/reef")
+    ROOT = Path("D:/TA/code/reef")
 else:
     raise SystemExit("Tipe Analisis Tidak Sesuai")
     
